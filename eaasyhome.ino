@@ -1,6 +1,7 @@
 #include <SPI.h>
 #include <Ethernet.h>
 #include <SD.h>
+#include <Servo.h> 
 // size of buffer used to capture HTTP requests
 #define REQ_BUF_SZ   60
 
@@ -12,6 +13,9 @@ File webFile;               // the web page file on the SD card
 char HTTP_req[REQ_BUF_SZ] = {0}; // buffered HTTP request stored as null terminated string
 char req_index = 0;              // index into HTTP_req buffer
 boolean LED_state[4] = {0}; // stores the states of the LEDs
+
+Servo microservo1,microservo2 ;
+int pos = 0; 
 
 void setup()
 {
@@ -39,13 +43,17 @@ void setup()
     pinMode(3, INPUT);
     pinMode(5, INPUT);
     // LEDs
+    microservo1.attach(8);
+    microservo2.attach(9);
     pinMode(6, OUTPUT);
     pinMode(7, OUTPUT);
-    pinMode(8, OUTPUT);
-    pinMode(9, OUTPUT);
+    //pinMode(8, OUTPUT);
+    //pinMode(9, OUTPUT);
     
     Ethernet.begin(mac, ip);  // initialize Ethernet device
-    server.begin();           // start to listen for clients
+    server.begin();      // start to listen for clients
+    Serial.print("IP: ");
+    Serial.println(Ethernet.localIP());
 }
 
 void loop()
@@ -144,20 +152,44 @@ void SetLEDs(void)
     // LED 3 (pin 8)
     if (StrContains(HTTP_req, "LED3=1")) {
         LED_state[2] = 1;  // save LED state
-        digitalWrite(8, HIGH);
+        //digitalWrite(8, HIGH);
+        for(pos = 0; pos < 95; pos += 3)  // goes from 0 degrees to 180 degrees 
+                {                                  // in steps of 1 degree 
+                  microservo1.write(pos);              // tell servo to go to position in variable 'pos' 
+                  delay(15);   
+                  Serial.println(pos);                  // waits 15ms for the servo to reach the position 
+                } 
     }
     else if (StrContains(HTTP_req, "LED3=0")) {
         LED_state[2] = 0;  // save LED state
-        digitalWrite(8, LOW);
+        //digitalWrite(8, LOW);
+        for(pos = 95; pos>=1; pos-=3)     // goes from 180 degrees to 0 degrees 
+                {                                
+                  microservo1.write(pos);              // tell servo to go to position in variable 'pos' 
+                  delay(15);
+                  Serial.println(pos);                  // waits 15ms for the servo to reach the position 
+                } 
     }
     // LED 4 (pin 9)
     if (StrContains(HTTP_req, "LED4=1")) {
         LED_state[3] = 1;  // save LED state
-        digitalWrite(9, HIGH);
+        //digitalWrite(9, HIGH);
+        for(pos = 0; pos < 95; pos += 1)  // goes from 0 degrees to 180 degrees 
+                {                                  // in steps of 1 degree 
+                  microservo2.write(pos);              // tell servo to go to position in variable 'pos' 
+                  delay(15);   
+                  Serial.println(pos);                  // waits 15ms for the servo to reach the position 
+                } 
     }
     else if (StrContains(HTTP_req, "LED4=0")) {
         LED_state[3] = 0;  // save LED state
-        digitalWrite(9, LOW);
+        //digitalWrite(9, LOW);
+        for(pos = 95; pos>=1; pos-=1)     // goes from 180 degrees to 0 degrees 
+                {                                
+                  microservo2.write(pos);              // tell servo to go to position in variable 'pos' 
+                  delay(15);
+                  Serial.println(pos);                  // waits 15ms for the servo to reach the position 
+                } 
     }
 }
 
