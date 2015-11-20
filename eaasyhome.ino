@@ -5,10 +5,9 @@
 // size of buffer used to capture HTTP requests
 #define REQ_BUF_SZ   60
 
-// MAC address from Ethernet shield sticker under board
-byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
-IPAddress ip(167, 205, 3, 128); // IP address, ARC Network
-EthernetServer server(80);  // create a server at port 80
+byte mac[] = { 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA }; // MAC address
+IPAddress ip(167, 205, 3, 128); // Static IP address
+EthernetServer server(80);  // Webserver Port 80
 File webFile;               // the web page file on the SD card
 char HTTP_req[REQ_BUF_SZ] = {0}; // buffered HTTP request stored as null terminated string
 char req_index = 0;              // index into HTTP_req buffer
@@ -23,7 +22,7 @@ void setup()
     pinMode(10, OUTPUT);
     digitalWrite(10, HIGH);
     
-    Serial.begin(9600);       // for debugging
+    Serial.begin(9600);       // for debugging initializes the serial connection at 9600 bits per second
     
     // initialize SD card
     Serial.println("Initializing SD card...");
@@ -58,13 +57,13 @@ void setup()
 
 void loop()
 {
-    EthernetClient client = server.available();  // try to get client
+    EthernetClient client = server.available();  // mencoba untuk mengdapatkan cinta dari client
 
-    if (client) {  // got client?
+    if (client) {  // Cek dapet client ngga ya?
         boolean currentLineIsBlank = true;
         while (client.connected()) {
-            if (client.available()) {   // client data available to read
-                char c = client.read(); // read 1 byte (character) from client
+            if (client.available()) {   // dapet client siap buat dibaca
+                char c = client.read(); // baca 1 byte (character) dari client
                 // limit the size of the stored received HTTP request
                 // buffer first part of HTTP request in HTTP_req array (string)
                 // leave last element in array as 0 to null terminate string (REQ_BUF_SZ - 1)
@@ -153,7 +152,7 @@ void SetLEDs(void)
     if (StrContains(HTTP_req, "LED3=1")) {
         LED_state[2] = 1;  // save LED state
         //digitalWrite(8, HIGH);
-        for(pos = 0; pos < 95; pos += 3)  // goes from 0 degrees to 180 degrees 
+        for(pos = 0; pos < 95; pos += 3)  // goes from 0 degrees to 95 degrees 
                 {                                  // in steps of 1 degree 
                   microservo1.write(pos);              // tell servo to go to position in variable 'pos' 
                   delay(15);   
@@ -163,7 +162,7 @@ void SetLEDs(void)
     else if (StrContains(HTTP_req, "LED3=0")) {
         LED_state[2] = 0;  // save LED state
         //digitalWrite(8, LOW);
-        for(pos = 95; pos>=1; pos-=3)     // goes from 180 degrees to 0 degrees 
+        for(pos = 95; pos>=1; pos-=3)     // goes from 95 degrees to 0 degrees 
                 {                                
                   microservo1.write(pos);              // tell servo to go to position in variable 'pos' 
                   delay(15);
@@ -174,7 +173,7 @@ void SetLEDs(void)
     if (StrContains(HTTP_req, "LED4=1")) {
         LED_state[3] = 1;  // save LED state
         //digitalWrite(9, HIGH);
-        for(pos = 0; pos < 95; pos += 1)  // goes from 0 degrees to 180 degrees 
+        for(pos = 0; pos < 95; pos += 1)  // goes from 0 degrees to 95 degrees 
                 {                                  // in steps of 1 degree 
                   microservo2.write(pos);              // tell servo to go to position in variable 'pos' 
                   delay(15);   
@@ -184,7 +183,7 @@ void SetLEDs(void)
     else if (StrContains(HTTP_req, "LED4=0")) {
         LED_state[3] = 0;  // save LED state
         //digitalWrite(9, LOW);
-        for(pos = 95; pos>=1; pos-=1)     // goes from 180 degrees to 0 degrees 
+        for(pos = 95; pos>=1; pos-=1)     // goes from 95 degrees to 0 degrees 
                 {                                
                   microservo2.write(pos);              // tell servo to go to position in variable 'pos' 
                   delay(15);
@@ -193,8 +192,7 @@ void SetLEDs(void)
     }
 }
 
-// send the XML file with analog values, switch status
-//  and LED status
+// send the XML file with analog values, switch status and LED status
 void XML_response(EthernetClient cl)
 {
     int analog_val;            // stores value read from analog inputs
@@ -300,3 +298,7 @@ char StrContains(char *str, char *sfind)
 
     return 0;
 }
+
+
+
+
