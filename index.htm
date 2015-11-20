@@ -18,7 +18,7 @@
 				if (this.readyState == 4) {
 					if (this.status == 200) {
 						if (this.responseXML != null) {
-							// XML file received - contains analog values, switch values and LED states
+							// XML file received : analog values, switch values & LED states
 							var count;
 							// get analog inputs
 							var num_an = this.responseXML.getElementsByTagName('analog').length;
@@ -68,10 +68,10 @@
 					}
 				}
 			}
-			// send HTTP GET request with LEDs to switch on/off if any
+			// send HTTP GET request with LEDs to switch on/off (kalau ada)
 			request.open("GET", "ajax_inputs" + strLED1 + strLED2 + strLED3 + strLED4 + nocache, true);
 			request.send(null);
-			setTimeout('GetArduinoIO()', 1000);
+			setTimeout('GetArduinoIO()', 500);
 			strLED1 = "";
 			strLED2 = "";
 			strLED3 = "";
@@ -180,3 +180,4 @@
 		</div>
     </body>
 </html>
+
